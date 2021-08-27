@@ -6,8 +6,7 @@
 void loadTitleAndUrlTo(char *title, char *url) {
 	feedsFile = fopen(FEEDSFILEDIR, "r");
 	if(feedsFile != NULL) {
-		loadTitleTo(title);
-		loadUrlTo(url);
+		fscanf(feedsFile, "%[^=]=%s", title, url);
 		fclose(feedsFile);
 	} 
 	else {
@@ -15,13 +14,3 @@ void loadTitleAndUrlTo(char *title, char *url) {
 		exit(1);
 	}
 }
-
-void loadTitleTo(char *title) {
-	for (char a = getc(feedsFile); a != titleUrlDelimiter; a = getc(feedsFile))
-		addCharToStr(a, title);
-}
-
-void loadUrlTo(char *url) {
-	for (char a = getc(feedsFile); a != '\n'; a = getc(feedsFile))
-		addCharToStr(a, url);	
-	}

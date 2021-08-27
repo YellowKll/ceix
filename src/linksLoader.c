@@ -6,7 +6,8 @@
 void loadTitleAndUrlTo(char *title, char *url) {
 	feedsFile = fopen(FEEDSFILEDIR, "r");
 	if(feedsFile != NULL) {
-		fscanf(feedsFile, "%[^=]=%s", title, url);
+		// everything up to '=' is loaded to title, and everything after '=' (and before '\n'), loaded to url
+		fscanf(feedsFile, "%[^=]=%[^\n]", title, url);
 		fclose(feedsFile);
 	} 
 	else {

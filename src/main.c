@@ -6,6 +6,6 @@
 int main() {
 	char *title = malloc(sizeof(char) + 1);
 	char *url = malloc(sizeof(char) + 1);
-	loadTitleAndUrl(title, url);
+	loadTitleAndUrlTo(title, url);
 	printf("title - %s\nurl - %s\n", title, url);
 }

@@ -1,0 +1,14 @@
+main:
+	loadTitlesAndUrls();
+	initTui();
+	cleanup();
+
+loadTitlesAndUrld:
+	while(!EOF):
+		newFeed = createNewFeed();
+		populateFeed(newFeed);
+		appendNewFeedToFeeds(&newFeed);
+
+populateFeed:
+	line = loadLine();
+	extractTitleAndUrl(line, newFeed.title, newFeed.url);

@@ -1,1 +1,2 @@
 hello world=https://helloworld.rss
+destroy the world=https://destroytheworld.xyz

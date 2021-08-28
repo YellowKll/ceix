@@ -1,7 +1,20 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <signal.h>
+#include "feeds.h"
 #include "config.h"
+#include "tui.c"
+
+void cleanup() {
+	endwin();
+	exit(0);
+}
 
 int main() {
-	printf("title - %s\nurl - %s\n", feeds[1].title, feeds[0].url);
+	signal(SIGINT, cleanup);
+
+	initTui();
+	drawTui();
+	mainLoop();
+	cleanup();
 }

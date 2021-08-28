@@ -1,4 +1,9 @@
+#ifndef FEEDS_H
+#define FEEDS_H
+
 typedef struct {
-	char *title;
+	char *name;
 	char *url;
 } Feed;
+
+#endif

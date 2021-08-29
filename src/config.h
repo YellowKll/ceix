@@ -4,10 +4,10 @@
 #include <curses.h>
 #include "feeds.h"
 
-static const Feed feeds[] = {
+static Feed feeds[] = {
 	// title			url
-	{"hello world",			"https://helloworld.rss"},
-	{" destroy the world! ",	"https://destorytheworld.xyz"},
+	{"hello world",			"https://example.com"},
+	{" destroy the world! ",	"https://lukesmith.xyz"},
 	{"glueBackTheWorld<3",		"https://gluebacktheworld.how"}
 };
 

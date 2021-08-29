@@ -3,6 +3,7 @@
 #include "tui.h"
 #include "config.h"
 #include "main.h"
+#include "networking.h"
 
 #define feedCount sizeof(feeds)/sizeof(Feed)
 
@@ -17,8 +18,8 @@ void drawTui() {
 }
 
 void initWindows() {
-	namesWindow = newwin(LINES-helpWindowHeight, COLS/2, 0, 0);
-	titlesWindow = newwin(LINES-helpWindowHeight, COLS/2, 0, COLS/2);
+	namesWindow = newwin(LINES - helpWindowHeight, COLS/2, 0, 0);
+	titlesWindow = newwin(LINES - helpWindowHeight, COLS/2, 0, COLS/2);
 	helpWindow = newwin(helpWindowHeight, COLS, LINES - helpWindowHeight, 0);
 
 	refresh();
@@ -30,7 +31,6 @@ void drawWindows() {
 	wrefresh(namesWindow);
 
 	box(titlesWindow, 0, 0);
-	drawTitles(titlesWindow);
 	wrefresh(titlesWindow);
 
 	box(helpWindow, 0, 0);
@@ -47,10 +47,6 @@ void printFeedName(WINDOW *win, int feedIndex) {
 	mvwprintw(win, feedIndex+1, 1, "%s", feeds[feedIndex].name);
 }
 
-void drawTitles(WINDOW *win) {
-	mvwprintw(win, 1, 1, "Titles of the articles.");
-}
-
 void drawHelp(WINDOW* win) {
 	if(helpWindowHeight > 1) 
 		mvwprintw(win, 1, 1, helpMessage);
@@ -58,6 +54,9 @@ void drawHelp(WINDOW* win) {
 
 void mainLoop() {
 	currentFeed = 0;
+	getDocument(feeds + currentFeed);
+	wprintw(titlesWindow, "%s", feeds[currentFeed].content);
+	wrefresh(titlesWindow);
 	highlightFeed(currentFeed);
 	for(char a = wgetch(namesWindow); a != 'q'; a = getch())
 		decideAction(a);
@@ -82,7 +81,7 @@ void decideAction(char a) {
 void nextFeed() {
 	unhighlightFeed(currentFeed);
 	if (currentFeed == feedCount-1) 
-		currentFeed = 0;
+		currentFeed = 1;
 	else
 		currentFeed++;
 	highlightFeed(currentFeed);

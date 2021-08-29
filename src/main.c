@@ -4,6 +4,7 @@
 #include "feeds.h"
 #include "config.h"
 #include "tui.c"
+#include "networking.c"
 
 void cleanup() {
 	endwin();

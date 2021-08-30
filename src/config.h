@@ -7,13 +7,13 @@
 static Feed feeds[] = {
 	// title			url
 	{"hello world",			"https://example.com"},
-	{" destroy the world! ",	"https://lukesmith.xyz"},
-	{"glueBackTheWorld<3",		"https://gluebacktheworld.how"}
+	{"glueBackTheWorld<3",		"https://lukesmith.xyz"},
+	{"d E \ns troy th eWórlð",	"https://destroyTheWorld.abfasd"},
 };
 
 #define helpWindowHeight 3
 #define helpMessage "Exit:q | Up/Down:j/k | (WIP) Left/Right:h/l"
 
-static const attr_t highlightAttribute = A_BOLD;
+static const attr_t highlightAttribute = A_REVERSE;
 
 #endif

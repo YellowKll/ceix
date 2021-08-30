@@ -1,5 +1,6 @@
 hello
 *.swp
+tags
 
 # Prerequisites
 *.d

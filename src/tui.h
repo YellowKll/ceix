@@ -15,10 +15,11 @@ void drawWindows();
 
 void drawNames(WINDOW *win);
 void printFeedName(WINDOW *win, int feedIndex);
-void drawTitles(WINDOW *win);
 void drawHelp(WINDOW *win);
+void drawTitles(WINDOW* win, Feed *feed); 
 
 void mainLoop();
+void prepareMainLoop();
 void decideAction(char a);
 
 void nextFeed();

@@ -30,9 +30,6 @@ void drawWindows() {
 	drawNames(namesWindow);
 	wrefresh(namesWindow);
 
-	box(titlesWindow, 0, 0);
-	wrefresh(titlesWindow);
-
 	box(helpWindow, 0, 0);
 	drawHelp(helpWindow);
 	wrefresh(helpWindow);
@@ -52,14 +49,27 @@ void drawHelp(WINDOW* win) {
 		mvwprintw(win, 1, 1, helpMessage);
 }
 
+void drawTitles(WINDOW* win, Feed *feed){ 
+	werase(win);
+	getArticles(feed);
+	mvwprintw(win, 1, 1, "%s", feed->content);
+	box(win, 0, 0);
+	wrefresh(win);
+}
+
 void mainLoop() {
-	currentFeed = 0;
-	getDocument(feeds + currentFeed);
-	wprintw(titlesWindow, "%s", feeds[currentFeed].content);
-	wrefresh(titlesWindow);
-	highlightFeed(currentFeed);
+	prepareMainLoop();
 	for(char a = wgetch(namesWindow); a != 'q'; a = getch())
 		decideAction(a);
+}
+
+void prepareMainLoop() {
+	currentFeed = 0;
+
+	drawTitles(titlesWindow, &feeds[currentFeed]);
+	wrefresh(titlesWindow);
+
+	highlightFeed(currentFeed);
 }
 
 void decideAction(char a) {
@@ -80,10 +90,11 @@ void decideAction(char a) {
 
 void nextFeed() {
 	unhighlightFeed(currentFeed);
-	if (currentFeed == feedCount-1) 
-		currentFeed = 1;
+	if (currentFeed == feedCount - 1) 
+		currentFeed = 0;
 	else
 		currentFeed++;
+	drawTitles(titlesWindow, &feeds[currentFeed]);
 	highlightFeed(currentFeed);
 }
 
@@ -93,6 +104,7 @@ void previousFeed() {
 		currentFeed = feedCount-1;
 	else
 		currentFeed--;
+	drawTitles(titlesWindow, &feeds[currentFeed]);
 	highlightFeed(currentFeed);
 }
 

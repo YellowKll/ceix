@@ -1,6 +1,7 @@
 #ifndef FEEDS_H
 #define FEEDS_H
 
+#include "config.h"
 
 typedef struct {
 	char *name;

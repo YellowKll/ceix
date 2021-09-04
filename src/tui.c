@@ -6,56 +6,74 @@
 #include "networking.h"
 
 
-void initTui () {
+void initCurses () {
 	initscr();
 	noecho();
+	cbreak();
 }
 
-void drawTui() {
+void initTui() {
+	initBoxes();
 	initWindows();
-	drawWindows();
-}
-
-void initWindows() {
-	namesWindow = newwin(LINES - helpWindowHeight, COLS/2, 0, 0);
-	titlesBox = newwin(LINES - helpWindowHeight, COLS/2, 0, COLS/2);
-	titlesWindow = derwin(titlesBox, LINES - helpWindowHeight - 2, COLS/2-2, 1, 1);
-	helpWindow = newwin(helpWindowHeight, COLS, LINES - helpWindowHeight, 0);
-
 	refresh();
 }
 
-void drawWindows() {
-	box(namesWindow, 0, 0);
-	drawNames(namesWindow);
-	wrefresh(namesWindow);
+void initBoxes (){
+	namesBox = newwin(NAMESBOX_HEIGHT, NAMESBOX_WIDTH, 0, 0);
+	titlesBox = newwin(TITLESBOX_HEIGHT, TITLESBOX_WIDTH, 0, COLS/2);
+	helpBox = newwin(HELPBOX_HEIGHT, HELPBOX_WIDTH, LINES - HELPBOX_HEIGHT, 0);
+}
 
-	box(helpWindow, 0, 0);
-	drawHelp(helpWindow);
-	wrefresh(helpWindow);
+void initWindows() {
+	namesWindow = derwin(namesBox, NAMESWINDOW_HEIGHT, NAMESWINDOW_WIDTH, 1, 1);
+	titlesWindow = derwin(titlesBox, TITLESWINDOW_HEIGHT, TITLESWINDOW_WIDTH, 1, 1);
+	helpWindow = derwin(helpBox, HELPWINDOW_HEIGHT, HELPWINDOW_WIDTH, 1, 1);
+}
+
+void drawTui() {
+	drawBoxes();
+	drawWindows();
+}
+
+void drawBoxes() {
+	box(namesBox, 0, 0);
+	wrefresh(namesBox);
+
+	box(titlesBox, 0, 0);
+	wrefresh(titlesBox);
+
+	box(helpBox, 0, 0);
+	wrefresh(helpBox);
+}
+
+void drawWindows() {
+	drawNames();
+	drawTitles(currentFeed);
+	drawHelp();
 }
 
 void drawNames() {
 	for(int i = 0; i < feedCount; i++)
 		printFeedName(&feeds[i]);
+	wrefresh(namesWindow);
 }
 
 void printFeedName(FEED *feed) {
 	mvwprintw(namesWindow, feed->index, 0, "%s", feed->name);
 }
 
-void drawHelp(WINDOW* win) {
-	if(helpWindowHeight > 1) 
-		mvwprintw(win, 1, 1, helpMessage);
-}
-
 void drawTitles(FEED *feed){ 
 	werase(titlesWindow);
-	getArticles(feed);
+	loadArticlesInto(feed);
 	mvwprintw(titlesWindow, 0, 0, "%s", feed->content);
-	box(titlesBox, 0, 0);
 	wrefresh(titlesWindow);
 }
+
+void drawHelp() {
+	mvwprintw(helpWindow, 0, 0, HELPMESSAGE);
+	wrefresh(helpWindow);
+}
+
 
 void mainLoop() {
 	prepareMainLoop();
@@ -64,11 +82,6 @@ void mainLoop() {
 }
 
 void prepareMainLoop() {
-	drawTitles(currentFeed);
-	touchwin(titlesBox);
-	wrefresh(titlesBox);
-	wrefresh(titlesWindow);
-
 	highlightFeed(currentFeed);
 }
 
@@ -76,11 +89,9 @@ void decideAction(char a) {
 	switch(a) {
 		case 'j':
 			action_nextFeed();
-			wrefresh(namesWindow);
 			break;
 		case 'k':
 			action_previousFeed();
-			wrefresh(namesWindow);
 			break;
 		case 'q':
 			cleanup();
@@ -91,15 +102,19 @@ void decideAction(char a) {
 void action_nextFeed() {
 	unhighlightFeed(currentFeed);
 	currentFeed = getNextFeed();
-	drawTitles(currentFeed);
 	highlightFeed(currentFeed);
+	wrefresh(namesWindow);
+
+	drawTitles(currentFeed);
 }
 
 void action_previousFeed() {
 	unhighlightFeed(currentFeed);
 	currentFeed = getPreviousFeed();
-	drawTitles(currentFeed);
 	highlightFeed(currentFeed);
+	wrefresh(namesWindow);
+
+	drawTitles(currentFeed);
 }
 
 void highlightFeed(FEED *feed) {

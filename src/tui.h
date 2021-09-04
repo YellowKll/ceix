@@ -3,20 +3,25 @@
 
 #include "feeds.h"
 
+WINDOW *namesBox;
 WINDOW *namesWindow;
 WINDOW *titlesBox;
 WINDOW *titlesWindow;
+WINDOW *helpBox;
 WINDOW *helpWindow;
 
 void initTui();
 void drawTui();
+
+void initBoxes();
+void drawBoxes();
 
 void initWindows();
 void drawWindows();
 
 void drawNames();
 void printFeedName(FEED *feed);
-void drawHelp(WINDOW *win);
+void drawHelp();
 void drawTitles(FEED *feed); 
 
 void mainLoop();

@@ -5,7 +5,6 @@
 #include "main.h"
 #include "networking.h"
 
-#define feedCount sizeof(feeds)/sizeof(Feed)
 
 void initTui () {
 	initscr();
@@ -19,7 +18,8 @@ void drawTui() {
 
 void initWindows() {
 	namesWindow = newwin(LINES - helpWindowHeight, COLS/2, 0, 0);
-	titlesWindow = newwin(LINES - helpWindowHeight, COLS/2, 0, COLS/2);
+	titlesBox = newwin(LINES - helpWindowHeight, COLS/2, 0, COLS/2);
+	titlesWindow = derwin(titlesBox, LINES - helpWindowHeight - 2, COLS/2-2, 1, 1);
 	helpWindow = newwin(helpWindowHeight, COLS, LINES - helpWindowHeight, 0);
 
 	refresh();
@@ -35,13 +35,13 @@ void drawWindows() {
 	wrefresh(helpWindow);
 }
 
-void drawNames(WINDOW *win) {
+void drawNames() {
 	for(int i = 0; i < feedCount; i++)
-		printFeedName(win, i);
+		printFeedName(&feeds[i]);
 }
 
-void printFeedName(WINDOW *win, int feedIndex) {
-	mvwprintw(win, feedIndex+1, 1, "%s", feeds[feedIndex].name);
+void printFeedName(FEED *feed) {
+	mvwprintw(namesWindow, feed->index, 0, "%s", feed->name);
 }
 
 void drawHelp(WINDOW* win) {
@@ -49,12 +49,12 @@ void drawHelp(WINDOW* win) {
 		mvwprintw(win, 1, 1, helpMessage);
 }
 
-void drawTitles(WINDOW* win, Feed *feed){ 
-	werase(win);
+void drawTitles(FEED *feed){ 
+	werase(titlesWindow);
 	getArticles(feed);
-	mvwprintw(win, 1, 1, "%s", feed->content);
-	box(win, 0, 0);
-	wrefresh(win);
+	mvwprintw(titlesWindow, 0, 0, "%s", feed->content);
+	box(titlesBox, 0, 0);
+	wrefresh(titlesWindow);
 }
 
 void mainLoop() {
@@ -64,9 +64,9 @@ void mainLoop() {
 }
 
 void prepareMainLoop() {
-	currentFeed = 0;
-
-	drawTitles(titlesWindow, &feeds[currentFeed]);
+	drawTitles(currentFeed);
+	touchwin(titlesBox);
+	wrefresh(titlesBox);
 	wrefresh(titlesWindow);
 
 	highlightFeed(currentFeed);
@@ -75,11 +75,11 @@ void prepareMainLoop() {
 void decideAction(char a) {
 	switch(a) {
 		case 'j':
-			nextFeed();
+			action_nextFeed();
 			wrefresh(namesWindow);
 			break;
 		case 'k':
-			previousFeed();
+			action_previousFeed();
 			wrefresh(namesWindow);
 			break;
 		case 'q':
@@ -88,32 +88,26 @@ void decideAction(char a) {
 	}
 }
 
-void nextFeed() {
+void action_nextFeed() {
 	unhighlightFeed(currentFeed);
-	if (currentFeed == feedCount - 1) 
-		currentFeed = 0;
-	else
-		currentFeed++;
-	drawTitles(titlesWindow, &feeds[currentFeed]);
+	currentFeed = getNextFeed();
+	drawTitles(currentFeed);
 	highlightFeed(currentFeed);
 }
 
-void previousFeed() {
+void action_previousFeed() {
 	unhighlightFeed(currentFeed);
-	if (currentFeed == 0)
-		currentFeed = feedCount-1;
-	else
-		currentFeed--;
-	drawTitles(titlesWindow, &feeds[currentFeed]);
+	currentFeed = getPreviousFeed();
+	drawTitles(currentFeed);
 	highlightFeed(currentFeed);
 }
 
-void highlightFeed(int i) {
+void highlightFeed(FEED *feed) {
 	wattron(namesWindow, highlightAttribute);
-	printFeedName(namesWindow, i);
+	printFeedName(feed);
 	wattroff(namesWindow, highlightAttribute);
 }
 
-void unhighlightFeed(int i) {
-	printFeedName(namesWindow, i);
+void unhighlightFeed(FEED *feed) {
+	printFeedName(feed);
 }

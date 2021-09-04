@@ -1,2 +1,2 @@
 all:
-	tcc -g -o hello src/main.c -lncurses -ltinfo -lcurl -Wall
+	gcc -g -o hello src/main.c -lncurses -ltinfo -lcurl -Wall

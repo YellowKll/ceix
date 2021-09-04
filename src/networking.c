@@ -10,7 +10,7 @@
 #include "networking.h"
 #include "feeds.h"
 
-void getArticles(Feed *feed) {
+void getArticles(FEED *feed) {
 	if (feed->content != NULL) {
 		return;
 	}
@@ -37,7 +37,7 @@ void getArticles(Feed *feed) {
 size_t got_data(char *response, size_t itemsize, size_t nitems, void *feedPtr) {
 	size_t bytes = itemsize * nitems;
 	// printf("New Chunk! (%zu bytes)", bytes);
-	Feed *feed = (Feed *) feedPtr;
+	FEED *feed = (FEED *) feedPtr;
 	feed->contentSize += bytes;
 
 	feed->content = realloc(feed->content, feed->contentSize+1);

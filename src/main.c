@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <signal.h>
-#include "feeds.h"
+#include "feeds.c"
 #include "config.h"
 #include "tui.c"
 #include "networking.c"
@@ -14,6 +14,7 @@ void cleanup() {
 int main() {
 	signal(SIGINT, cleanup);
 
+	initFeeds();
 	initTui();
 	drawTui();
 	mainLoop();

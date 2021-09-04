@@ -1,11 +1,12 @@
 #ifndef TUI_H
 #define TUI_H
 
+#include "feeds.h"
+
 WINDOW *namesWindow;
+WINDOW *titlesBox;
 WINDOW *titlesWindow;
 WINDOW *helpWindow;
-
-unsigned int currentFeed;
 
 void initTui();
 void drawTui();
@@ -13,19 +14,19 @@ void drawTui();
 void initWindows();
 void drawWindows();
 
-void drawNames(WINDOW *win);
-void printFeedName(WINDOW *win, int feedIndex);
+void drawNames();
+void printFeedName(FEED *feed);
 void drawHelp(WINDOW *win);
-void drawTitles(WINDOW* win, Feed *feed); 
+void drawTitles(FEED *feed); 
 
 void mainLoop();
 void prepareMainLoop();
 void decideAction(char a);
 
-void nextFeed();
-void previousFeed();
+void action_nextFeed();
+void action_previousFeed();
 
-void highlightFeed(int i);
-void unhighlightFeed(int i);
+void highlightFeed(FEED *feed);
+void unhighlightFeed(FEED *feed);
 
 #endif
